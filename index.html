@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Task Center XII.11</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="content">
+
+        <!-- =========================
+             HALAMAN LOGIN
+        ========================== -->
+
+        <div id="login-page">
+
+            <form id="loginForm" class="student-login-form">
+
+                <h2>Login</h2>
+
+                <div class="input-box">
+
+                    <input
+                        type="text"
+                        id="nisn"
+                        placeholder="KEY"
+                        autocomplete="off"
+                        required
+                    >
+
+                    <i class="fa-solid fa-user"></i>
+
+                </div>
+
+                <div class="remember">
+
+                    <label>
+                        <input type="checkbox" id="rememberMe">
+                        Remember me
+                    </label>
+
+                </div>
+
+                <p class="login-hint">Masuk sebagai siswa menggunakan KEY terdaftar.</p>
+
+                <button type="button" id="adminLoginLink" class="admin-login-link">Login as admin?</button>
+
+                <button type="submit" class="btnn">
+                    Login
+                </button>
+
+                <p id="loginError"></p>
+
+            </form>
+
+            <form id="adminLoginForm" class="admin-login-form" hidden>
+
+                <h2>Login Admin</h2>
+
+                <div class="input-box">
+                    <input type="text" id="adminUsername" placeholder="Username admin" autocomplete="username" required>
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+
+                <div class="input-box">
+                    <input type="password" id="adminPassword" placeholder="Password admin" autocomplete="current-password" required>
+                    <i class="fa-solid fa-key"></i>
+                </div>
+
+                <button type="button" id="studentLoginLink" class="admin-login-link">Login sebagai siswa</button>
+
+                <button type="submit" class="btnn">
+                    Login Admin
+                </button>
+
+                <p id="adminLoginError"></p>
+
+            </form>
+
+        </div>
+
+        <div id="admin-page">
+            <div class="admin-container">
+                <div class="dashboard-header">
+                    <div>
+                        <p class="small-title">TASK CENTER · ADMIN</p>
+                        <h1>Panel Admin</h1>
+                        <p class="subject-title">Kelola profil siswa dan tugas kelas</p>
+                    </div>
+                    <span class="admin-badge"><i class="fa-solid fa-shield-halved"></i> Administrator</span>
+                </div>
+                <div class="gold-line"></div>
+                <div class="admin-grid">
+                    <section class="admin-panel">
+                        <h2><i class="fa-solid fa-user-plus"></i> Daftarkan siswa</h2>
+                        <form id="studentForm" class="admin-form">
+                            <label>Nama lengkap<input id="studentName" required></label>
+                            <label>Tanggal lahir<input id="studentBirthDate" type="date" required></label>
+                            <button class="primary-btn" type="submit">Simpan profil siswa</button>
+                        </form>
+                        <div id="generatedStudentCode" class="generated-code" hidden></div>
+                        <div id="studentList" class="admin-list"></div>
+                    </section>
+                    <section class="admin-panel">
+                        <h2><i class="fa-solid fa-list-check"></i> Tugas untuk semua siswa</h2>
+                        <form id="taskForm" class="admin-form">
+                            <label>Mata pelajaran<select id="taskSubjectName" class="task-subject-select" required></select></label>
+                            <label>Judul tugas<input id="newTaskTitle" required></label>
+                            <label>Deadline<input id="newTaskDeadline" type="date" required></label>
+                            <button class="primary-btn" type="submit">Tambahkan tugas</button>
+                        </form>
+                        <p id="adminMessage" class="form-message"></p>
+                    </section>
+                </div>
+                <section class="admin-panel reports-panel">
+                    <div class="admin-section-heading"><div><p class="small-title">MODERATION</p><h2><i class="fa-solid fa-flag"></i> Laporan komentar</h2></div><button type="button" id="refreshReports" class="secondary-btn"><i class="fa-solid fa-rotate"></i> Refresh</button></div>
+                    <div id="reportList" class="report-list"></div>
+                    <div class="admin-section-heading punishment-heading"><div><p class="small-title">STATUS SISWA</p><h2><i class="fa-solid fa-user-lock"></i> Siswa terkena hukuman</h2></div><button type="button" id="removePunishments" class="secondary-btn" disabled>Hapus hukuman</button></div>
+                    <div id="punishedStudentList" class="punished-list"></div>
+                </section>
+                <h2 class="section-title admin-section-title">Daftar mata pelajaran</h2>
+                <div id="adminSubjectList" class="subject-grid admin-subject-grid"></div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Keluar
+                </button>
+            </div>
+        </div>
+
+        <div id="admin-task-page">
+            <div class="admin-container admin-task-container">
+                <button class="back-btn" onclick="backToAdminSubjects()"><i class="fa-solid fa-arrow-left"></i> Kembali ke mapel</button>
+                <div class="task-header"><span id="adminTaskIcon">📚</span><div><p>ADMIN · DAFTAR TUGAS</p><h1 id="adminTaskSubject">Mata Pelajaran</h1></div></div>
+                <div class="gold-line"></div>
+                <div id="adminTaskList"></div>
+            </div>
+        </div>
+
+        <div id="admin-task-detail-page">
+            <div class="admin-container detail-container">
+                <button class="back-btn" onclick="backToAdminTasks()"><i class="fa-solid fa-arrow-left"></i> Kembali ke tugas</button>
+                <div class="task-header"><span id="adminDetailIcon">📝</span><div><p id="adminDetailSubjectLabel">ADMIN · DETAIL TUGAS</p><h1 id="adminDetailTitle">Detail tugas</h1></div></div>
+                <div class="gold-line"></div>
+                <div class="detail-meta"><span><i class="fa-regular fa-calendar"></i> Deadline: <strong id="adminDetailDeadline"></strong></span><span class="admin-badge"><i class="fa-solid fa-user-shield"></i> <span id="adminCommentAuthor">Admin</span></span></div>
+                <section class="comment-panel admin-comment-panel">
+                    <h3>Komentar tugas</h3>
+                    <form id="adminCommentForm" class="comment-form">
+                        <textarea id="adminCommentInput" rows="4" placeholder="Tulis komentar sebagai admin..." required></textarea>
+                        <button type="submit" class="primary-btn comment-submit">Kirim komentar</button>
+                    </form>
+                    <div id="adminCommentList" class="comment-list"></div>
+                </section>
+            </div>
+        </div>
+
+
+        <!-- =========================
+             DASHBOARD
+        ========================== -->
+
+        <div id="dashboard-page">
+
+            <div class="dashboard-container">
+
+                <div class="dashboard-header">
+
+                    <div>
+
+                        <p class="small-title">
+                            TASK CENTER
+                        </p>
+
+                        <h1>
+                            DAFTAR TUGAS
+                        </h1>
+
+                        <p class="subject-title">
+                            KELAS XII.11 · TP. 2026/2027
+                        </p>
+
+                    </div>
+
+                    <div class="student-box">
+
+                        <i class="fa-solid fa-user-circle"></i>
+
+                        <div>
+                            <strong id="dashboardName">
+                                Nama Siswa
+                            </strong>
+
+                            <span id="dashboardNisn">
+                                KEY
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="gold-line"></div>
+
+
+                <h2 class="section-title">
+                    Mata Pelajaran
+                </h2>
+
+
+                <!-- DAFTAR MAPEL -->
+
+                <div id="subjectList" class="subject-grid"></div>
+
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Keluar
+                </button>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             HALAMAN DAFTAR TUGAS
+        ========================== -->
+
+        <div id="task-page">
+
+            <div class="task-container">
+
+                <button class="back-btn" onclick="backToDashboard()">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Kembali
+
+                </button>
+
+
+                <div class="task-header">
+
+                    <span id="taskIcon">
+                        📚
+                    </span>
+
+                    <div>
+
+                        <p>
+                            DAFTAR TUGAS
+                        </p>
+
+                        <h1 id="taskSubject">
+                            Mata Pelajaran
+                        </h1>
+
+                    </div>
+
+                </div>
+
+
+                <div class="gold-line"></div>
+
+
+                <div id="taskList"></div>
+
+
+            </div>
+
+        </div>
+
+        <div id="task-detail-page">
+            <div class="task-container detail-container">
+                <button class="back-btn" onclick="backToTasks()"><i class="fa-solid fa-arrow-left"></i> Kembali ke tugas</button>
+                <div class="task-header"><span id="detailIcon">📝</span><div><p id="detailSubjectLabel">TUGAS</p><h1 id="detailTitle">Detail tugas</h1></div></div>
+                <div class="gold-line"></div>
+                <div class="detail-meta"><span><i class="fa-regular fa-calendar"></i> Deadline: <strong id="detailDeadline"></strong></span><span id="detailStatus" class="task-status unfinished">Belum Selesai</span></div>
+                <section id="uploadPanel" class="upload-panel">
+                    <h2>Kirim hasil tugas <small>(opsional)</small></h2>
+                    <p>Ambil foto langsung atau pilih file gambar dari perangkat.</p>
+                    <div id="uploadActions" class="upload-actions">
+                        <label class="upload-btn"><i class="fa-solid fa-camera"></i> Kamera<input id="cameraInput" type="file" accept="image/*" capture="environment"></label>
+                        <label class="upload-btn"><i class="fa-regular fa-image"></i> Pilih gambar<input id="fileInput" type="file" accept="image/*"></label>
+                    </div>
+                    <div id="uploadInfo" class="upload-info">Belum ada file dipilih.</div>
+                    <button id="finishTaskBtn" class="finish-btn" type="button"><i class="fa-solid fa-check"></i> Selesai</button>
+                    <button id="cancelTaskBtn" class="cancel-btn" type="button"><i class="fa-solid fa-rotate-left"></i> Batalkan</button>
+                </section>
+
+                <section class="comment-panel">
+                    <h3>Komentar tugas</h3>
+                    <form id="commentForm" class="comment-form">
+                        <textarea id="commentInput" rows="4" placeholder="Tulis komentar, link, atau catatan tugas digital..." required></textarea>
+                        <button type="submit" class="primary-btn comment-submit">Kirim komentar</button>
+                    </form>
+                    <div id="commentList" class="comment-list"></div>
+                </section>
+            </div>
+        </div>
+
+        <div id="preview-modal" class="preview-modal" aria-hidden="true">
+            <div class="preview-dialog"><button id="closePreview" class="close-preview" aria-label="Tutup preview">&times;</button><img id="previewImage" alt="Preview hasil tugas"><p id="previewFileName"></p></div>
+        </div>
+
+        <div id="report-modal" class="preview-modal" aria-hidden="true">
+            <form id="reportForm" class="report-dialog">
+                <button type="button" id="closeReport" class="close-preview" aria-label="Tutup laporan">&times;</button>
+                <p class="report-kicker">LAPORKAN KOMENTAR</p>
+                <h2>Bantu jaga ruang diskusi</h2>
+                <p id="reportedCommentText" class="reported-comment"></p>
+                <label class="report-label">Alasan laporan
+                    <select id="reportReason" required>
+                        <option value="" disabled selected>Pilih alasan</option>
+                        <option>Spam atau iklan</option>
+                        <option>Bahasa kasar atau menyerang</option>
+                        <option>Konten tidak pantas</option>
+                        <option>Informasi menyesatkan</option>
+                        <option value="other">Lainnya</option>
+                    </select>
+                </label>
+                <label id="otherReasonLabel" class="report-label" hidden>Jelaskan alasan
+                    <textarea id="otherReason" rows="3" placeholder="Tulis alasan laporan..."></textarea>
+                </label>
+                <button type="submit" class="primary-btn report-submit"><i class="fa-solid fa-flag"></i> Kirim laporan</button>
+            </form>
+        </div>
+
+        <div id="confirm-modal" class="preview-modal confirm-modal" aria-hidden="true">
+            <div class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+                <div class="confirm-icon"><i class="fa-solid fa-circle-question"></i></div>
+                <p class="confirm-kicker">KONFIRMASI AKSI</p>
+                <h2 id="confirmTitle">Lanjutkan aksi ini?</h2>
+                <p id="confirmMessage">Perubahan ini akan diterapkan.</p>
+                <div class="confirm-actions">
+                    <button type="button" id="confirmCancel" class="confirm-cancel">Batal</button>
+                    <button type="button" id="confirmAccept" class="confirm-accept">Lanjutkan</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="punishment-modal" class="preview-modal" aria-hidden="true">
+            <form id="punishmentForm" class="confirm-dialog punishment-dialog">
+                <div class="confirm-icon"><i class="fa-solid fa-gavel"></i></div>
+                <p class="confirm-kicker">AKSI LAPORAN</p>
+                <h2>Terapkan hukuman</h2>
+                <p>Pilih tepat satu tindakan. Komentar yang dilaporkan akan dihapus.</p>
+                <label class="punishment-option"><input type="radio" name="punishment" value="mute" required><span><strong>Mute selama 24 Jam</strong><small>Siswa tidak dapat mengirim komentar selama 24 jam.</small></span></label>
+                <label class="punishment-option"><input type="radio" name="punishment" value="banned" required><span><strong>Banned permanent</strong><small>Siswa tidak dapat mengirim komentar selamanya.</small></span></label>
+                <div class="confirm-actions"><button type="button" id="closePunishment" class="confirm-cancel">Batal</button><button type="submit" class="confirm-accept">Terapkan</button></div>
+            </form>
+        </div>
+
+        <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="./script/index.js"></script>
+
+</body>
+
+</html>
