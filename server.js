@@ -227,5 +227,4 @@ const server = http.createServer(async (request, response) => {
     }
 });
 
-const port = Number(process.env.PORT || 8000);
-server.listen(port, () => console.log(`Task Center berjalan di http://localhost:${port}`));
+
